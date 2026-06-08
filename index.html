@@ -17,10 +17,10 @@
             background-color: #5d5e62;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: flex-start; /* Aligns content from top down */
+            align-items: center; /* Centers horizontally */
             min-height: 100vh;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         /* Brand Logo Container */
@@ -28,24 +28,15 @@
             width: 100%;
             max-width: 1060px;
             text-align: center;
-            margin-top: 20px; /* Pushes the logo slightly down from the very top of the screen */
-            margin-bottom: 50px; /* Creates a clean, unattached gap between logo and progress bar */
-            padding: 0 15px;
-        }
-
-        /* Brand Logo Container */
-        .logo-container {
-            width: 100%;
-            max-width: 1060px; /* Allows the logo to scale up to this exact maximum width */
-            text-align: center;
-            margin-bottom: 45px; /* Keeps the generous padding to the card below */
+            margin-top: 20px;
+            margin-bottom: 45px;
             padding: 0 15px;
         }
 
         .brand-logo {
-            width: 100%; /* Spreads to fill 100% of the horizontal space available */
-            height: auto; /* Scales the height naturally so the logo never distorts */
-            max-height: 120px; /* Increased to allow widescreen logos to grow larger without clipping */
+            width: 100%;
+            height: auto;
+            max-height: 120px;
             object-fit: contain;
         }
 
@@ -59,7 +50,7 @@
             margin-bottom: 24px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: opacity 0.3s ease; /* Lets us hide it smoothly at the end */
+            transition: opacity 0.3s ease;
         }
 
         .progress-bar {
@@ -80,7 +71,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            min-height: 340px; /* Adjusted slightly to fit the copy comfortably */
+            min-height: 380px; /* Slight bump to perfectly accommodate the top back button space */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -89,13 +80,39 @@
         form {
             width: 100%;
             height: 100%;
-            padding: 40px 30px;
+            padding: 55px 30px 40px 30px; /* Extra padding on top to clear space for back button */
+        }
+
+        /* Sleek Back Button Layout */
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            background: none;
+            border: none;
+            color: #5d5e62;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            -webkit-tap-highlight-color: transparent;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-back:active {
+            transform: scale(1); /* Removes button jump physics for back navigation */
+            opacity: 1;
         }
 
         /* Ultra-Smooth Crossfade Setup */
         .step {
             position: absolute;
-            top: 40px;
+            top: 55px;
             left: 30px;
             right: 30px;
             bottom: 40px;
@@ -137,7 +154,7 @@
             width: 100%;
         }
 
-        button {
+        .btn-yes, .btn-no {
             width: 100%;
             padding: 18px;
             font-size: 18px;
@@ -160,7 +177,7 @@
             border: 2px solid #b4cac0;
         }
 
-        button:active {
+        .btn-yes:active, .btn-no:active {
             transform: scale(0.97);
         }
 
@@ -209,6 +226,10 @@
 </div>
 
 <div class="form-container">
+    <button type="button" class="btn-back" id="global-back-btn" onclick="prevStep()" style="display: none;">
+        ← Zurück
+    </button>
+
     <form id="multi-step-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         
         <div class="step active" id="step1">
@@ -262,7 +283,9 @@
 <script>
     let currentStep = 1;
     const totalSteps = 5;
-    let allAnswersAreYes = true;
+    
+    // Store user answers array by step to calculate final redirect dynamically
+    let answers = {};
 
     function updateProgressBar() {
         const progressPercentage = (currentStep / totalSteps) * 100;
@@ -270,11 +293,19 @@
     }
     updateProgressBar();
 
-    function nextStep(answer) {
-        // Fixed: checking for 'nein' to match the button function parameters
-        if (answer === 'nein') {
-            allAnswersAreYes = false;
+    function updateBackVisibility() {
+        const backBtn = document.getElementById('global-back-btn');
+        // Only show back button if we are past step 1, but not on final thanks card
+        if (currentStep > 1 && currentStep <= totalSteps) {
+            backBtn.style.display = 'inline-flex';
+        } else {
+            backBtn.style.display = 'none';
         }
+    }
+
+    function nextStep(answer) {
+        // Record the exact answer given on this specific numerical step
+        answers[currentStep] = answer;
 
         // Hide current step
         document.getElementById(`step${currentStep}`).classList.remove('active');
@@ -284,21 +315,43 @@
         
         if (nextStepEl) {
             updateProgressBar();
+            updateBackVisibility();
             setTimeout(() => {
                 nextStepEl.classList.add('active');
             }, 50);
         } else {
-            // Form actions are complete
-            if (allAnswersAreYes) {
-                // If ALL answers were 'ja', redirect them out
+            // Check if any registered step contains 'nein'
+            let containsNein = Object.values(answers).includes('nein');
+            
+            updateBackVisibility(); // Safely clears the back button on end card
+
+            if (!containsNein) {
+                // Perfect score! Redirect to Google Maps review landing page
                 window.location.href = "https://search.google.com/local/writereview?placeid=ChIJvdN9lcA5jkcRByHZHNx5ZfQ";
             } else {
-                // If one or more answers were 'nein', display the native thank-you card
-                document.getElementById('progress-wrapper').style.opacity = '0'; // Hide the bar seamlessly
+                // Contains a complaint -> Display native embedded thank you page
+                document.getElementById('progress-wrapper').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('thankyou-step').classList.add('active');
                 }, 50);
             }
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            // Hide current step
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep--;
+
+            // Pull layout elements for update syncs
+            updateProgressBar();
+            updateBackVisibility();
+
+            // Reactivate historical index step view window
+            setTimeout(() => {
+                document.getElementById(`step${currentStep}`).classList.add('active');
+            }, 50);
         }
     }
 </script>
