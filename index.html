@@ -28,12 +28,14 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding: 0 10px; /* Prevents long logos from touching mobile screen edges */
         }
 
         .brand-logo {
-            max-width: 140px;
-            max-height: 70px;
+            width: 85%; /* Let it spread horizontally across the card width */
+            max-width: 320px; /* Absolute maximum limit so it stays elegant */
+            max-height: 50px; /* Keeps a wide/short logo perfectly proportional */
             object-fit: contain;
         }
 
@@ -169,40 +171,40 @@
         <div class="step active" id="step1">
             <p class="question">Sind Sie mit der Freundlichkeit und Hilfsbereitschaft unseres Teams zufrieden?</p>
             <div class="btn-container">
-                <button type="button" class="btn-yes" onclick="nextStep('yes')">Yes</button>
-                <button type="button" class="btn-no" onclick="nextStep('no')">No</button>
+                <button type="button" class="btn-yes" onclick="nextStep('ja')">Ja</button>
+                <button type="button" class="btn-no" onclick="nextStep('nein')">Nein</button>
             </div>
         </div>
 
         <div class="step" id="step2">
             <p class="question">Fühlen Sie sich in unserer Praxis gut betreut?</p>
             <div class="btn-container">
-                <button type="button" class="btn-yes" onclick="nextStep('yes')">Yes</button>
-                <button type="button" class="btn-no" onclick="nextStep('no')">No</button>
+                <button type="button" class="btn-yes" onclick="nextStep('ja')">Ja</button>
+                <button type="button" class="btn-no" onclick="nextStep('nein')">Nein</button>
             </div>
         </div>
 
         <div class="step" id="step3">
             <p class="question">Werden Ihre Fragen und Anliegen verständlich beantwortet?</p>
             <div class="btn-container">
-                <button type="button" class="btn-yes" onclick="nextStep('yes')">Yes</button>
-                <button type="button" class="btn-no" onclick="nextStep('no')">No</button>
+                <button type="button" class="btn-yes" onclick="nextStep('ja')">Ja</button>
+                <button type="button" class="btn-no" onclick="nextStep('nein')">Nein</button>
             </div>
         </div>
 
         <div class="step" id="step4">
             <p class="question">Sind Sie mit Ihrem bisherigen Behandlungsverlauf zufrieden?</p>
             <div class="btn-container">
-                <button type="button" class="btn-yes" onclick="nextStep('yes')">Yes</button>
-                <button type="button" class="btn-no" onclick="nextStep('no')">No</button>
+                <button type="button" class="btn-yes" onclick="nextStep('ja')">Ja</button>
+                <button type="button" class="btn-no" onclick="nextStep('nein')">Nein</button>
             </div>
         </div>
 
         <div class="step" id="step5">
             <p class="question">Würden Sie unsere Praxis Ihrer Familie oder Ihren Freunden weiterempfehlen?</p>
             <div class="btn-container">
-                <button type="button" class="btn-yes" onclick="nextStep('yes')">Yes</button>
-                <button type="button" class="btn-no" onclick="nextStep('no')">No</button>
+                <button type="button" class="btn-yes" onclick="nextStep('ja')">Ja</button>
+                <button type="button" class="btn-no" onclick="nextStep('nein')">Nein</button>
             </div>
         </div>
 
