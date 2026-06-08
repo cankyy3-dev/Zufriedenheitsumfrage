@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Survey</title>
+    <style>
+        /* Change your font size to whatever you want here absolutely free */
+        body { font-family: sans-serif; font-size: 24px; padding: 50px; text-align: center; }
+        .step { display: none; }
+        .step.active { display: block; }
+        button { font-size: 20px; margin: 10px; padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<form id="multi-step-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <!-- Step 1 -->
+    <div class="step active" id="step1">
+        <p>Question 1: Do you like coffee?</p>
+        <button type="button" onclick="nextStep('yes')">Yes</button>
+        <button type="button" onclick="nextStep('no')">No</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step" id="step2">
+        <p>Question 2: Do you drink it daily?</p>
+        <button type="button" onclick="nextStep('yes')">Yes</button>
+        <button type="button" onclick="nextStep('no')">No</button>
+    </div>
+</form>
+
+<script>
+    let currentStep = 1;
+    let allAnswersAreYes = true;
+
+    function nextStep(answer) {
+        if (answer === 'no') {
+            allAnswersAreYes = false; // Flag if they ever say no
+        }
+
+        // Hide current step
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        currentStep++;
+
+        const nextStepEl = document.getElementById(`step${currentStep}`);
+        
+        if (nextStepEl) {
+            // Show next question
+            nextStepEl.classList.add('active');
+        } else {
+            // No more steps? Handle the conditional redirection right here
+            if (allAnswersAreYes) {
+                window.location.href = "https://your-success-redirection-url.com";
+            } else {
+                window.location.href = "https://your-thank-you-page.com";
+            }
+        }
+    }
+</script>
+</body>
+</html>
