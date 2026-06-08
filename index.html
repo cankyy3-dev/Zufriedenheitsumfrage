@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Survey</title>
+    <title>Zufriedenheitsumfrage</title>
     <style>
         /* Base Reset & Mobile Optimization */
         * {
@@ -26,7 +26,7 @@
         /* Brand Logo Container */
         .logo-container {
             width: 100%;
-            max-width: 800px; /* Allows the logo to scale up to this exact maximum width */
+            max-width: 1060px; /* Allows the logo to scale up to this exact maximum width */
             text-align: center;
             margin-bottom: 45px; /* Keeps the generous padding to the card below */
             padding: 0 15px;
@@ -43,24 +43,23 @@
         .progress-container {
             width: 100%;
             max-width: 400px;
-            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white that pops off your charcoal background */
-            height: 8px; /* Slightly thicker (from 6px to 8px) for better visibility */
+            background-color: rgba(255, 255, 255, 0.2);
+            height: 8px;
             border-radius: 10px;
             margin-bottom: 24px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle outline */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: opacity 0.3s ease; /* Lets us hide it smoothly at the end */
         }
 
         .progress-bar {
             height: 100%;
             width: 0%; 
-            background-color: #a0cfba; /* Your beautiful accent green stands out cleanly now */
+            background-color: #a0cfba;
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 8px rgba(160, 207, 186, 0.5); /* Subtle glow effect to emphasize the fill */
+            box-shadow: 0 0 8px rgba(160, 207, 186, 0.5);
         }
 
-
-        
         /* Card Container */
         .form-container {
             background: #ffffff;
@@ -71,7 +70,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            min-height: 320px; /* Keeps the container a stable height during cross-fade */
+            min-height: 340px; /* Adjusted slightly to fit the copy comfortably */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -93,6 +92,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -153,6 +153,39 @@
         button:active {
             transform: scale(0.97);
         }
+
+        /* Elegant Minimalist Checkmark UI */
+        .success-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background-color: #ffffff;
+            border: 3px solid #a0cfba;
+            border-radius: 50%;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .success-icon::after {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 22px;
+            border: solid #a0cfba;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+            position: relative;
+            top: -2px;
+        }
+
+        p.thank-you-text {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.5;
+            color: #4a4a4a;
+        }
     </style>
 </head>
 <body>
@@ -161,7 +194,7 @@
     <img src="Stucki Schriftzug.png?v=1" alt="Brand Logo" class="brand-logo" onerror="this.style.display='none'">
 </div>
 
-<div class="progress-container">
+<div class="progress-container" id="progress-wrapper">
     <div class="progress-bar" id="progress"></div>
 </div>
 
@@ -208,6 +241,11 @@
             </div>
         </div>
 
+        <div class="step" id="thankyou-step">
+            <div class="success-icon"></div>
+            <p class="thank-you-text">Vielen Dank für Ihre Teilnahme an unserer Zufriedenheitsumfrage. Ihre Antworten helfen uns bei der stetigen Verbesserung unserer Patientenerfahrung.</p>
+        </div>
+
     </form>
 </div>
 
@@ -216,7 +254,6 @@
     const totalSteps = 5;
     let allAnswersAreYes = true;
 
-    // Initialize progress bar perfectly on page load (Step 1 = 20%)
     function updateProgressBar() {
         const progressPercentage = (currentStep / totalSteps) * 100;
         document.getElementById('progress').style.width = `${progressPercentage}%`;
@@ -224,28 +261,33 @@
     updateProgressBar();
 
     function nextStep(answer) {
-        if (answer === 'no') {
+        // Fixed: checking for 'nein' to match the button function parameters
+        if (answer === 'nein') {
             allAnswersAreYes = false;
         }
 
-        // Deactivate old step (initiates fade-out animation)
+        // Hide current step
         document.getElementById(`step${currentStep}`).classList.remove('active');
         currentStep++;
 
         const nextStepEl = document.getElementById(`step${currentStep}`);
         
         if (nextStepEl) {
-            // Update the progress bar fluidly
             updateProgressBar();
-
-            // Activate new step (initiates fade-in animation)
-            nextStepEl.classList.add('active');
+            setTimeout(() => {
+                nextStepEl.classList.add('active');
+            }, 50);
         } else {
-            // Form is completed -> Redirect logic
+            // Form actions are complete
             if (allAnswersAreYes) {
-                window.location.href = "https://search.google.com/local/writereview?placeid=ChIJvdN9lcA5jkcRByHZHNx5ZfQ";
+                // If ALL answers were 'ja', redirect them out
+                window.location.href = "https://your-success-redirection-url.com";
             } else {
-                window.location.href = "https://search.google.com/local/writereview?placeid=ChIJvdN9lcA5jkcRByHZHNx5ZfQ";
+                // If one or more answers were 'nein', display the native thank-you card
+                document.getElementById('progress-wrapper').style.opacity = '0'; // Hide the bar seamlessly
+                setTimeout(() => {
+                    document.getElementById('thankyou-step').classList.add('active');
+                }, 50);
             }
         }
     }
