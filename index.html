@@ -14,7 +14,7 @@
         }
 
         body {
-            background-color: #5d5e62; /* Your deep background choice */
+            background-color: #5d5e62;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -32,7 +32,7 @@
         }
 
         .brand-logo {
-            max-width: 140px; /* Perfectly sized for mobile layouts */
+            max-width: 140px;
             max-height: 70px;
             object-fit: contain;
         }
@@ -41,7 +41,7 @@
         .progress-container {
             width: 100%;
             max-width: 400px;
-            background-color: #b4cac0; /* Brand secondary color used as base track */
+            background-color: #b4cac0;
             height: 6px;
             border-radius: 10px;
             margin-bottom: 24px;
@@ -50,32 +50,58 @@
 
         .progress-bar {
             height: 100%;
-            width: 20%; /* Starts at 20% for Step 1 of 5 */
-            background-color: #a0cfba; /* Your accent green */
-            transition: width 0.3s ease;
+            width: 0%; /* Dynamic start managed cleanly by JS now */
+            background-color: #a0cfba;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Snappy, fluid animation */
         }
 
         /* Card Container */
         .form-container {
-            background: #ffffff; /* Brand crisp white container */
+            background: #ffffff;
             width: 100%;
             max-width: 400px;
-            padding: 40px 30px;
             border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 320px; /* Keeps the container a stable height during cross-fade */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Step Visibility & Smooth Fade Effect */
+        form {
+            width: 100%;
+            height: 100%;
+            padding: 40px 30px;
+        }
+
+        /* Ultra-Smooth Crossfade Setup */
         .step {
-            display: none;
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            right: 30px;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         .step.active {
-            display: block;
+            position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         /* Question Typography */
@@ -83,15 +109,16 @@
             font-size: 24px;
             font-weight: 600;
             line-height: 1.35;
-            margin-bottom: 40px;
-            color: #2b2b2b; /* Softened black for readability */
+            margin-bottom: 30px;
+            color: #2b2b2b;
         }
 
-        /* Mobile-First Big Buttons */
+        /* Mobile Buttons layout */
         .btn-container {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            width: 100%;
         }
 
         button {
@@ -106,20 +133,17 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Yes Button: Clean Accent Green */
         .btn-yes {
             background-color: #a0cfba;
             color: #ffffff;
         }
 
-        /* No Button: Muted Soft Brand Color with Deep Gray Text */
         .btn-no {
-            background-color: #f0f4f2; /* Ultra light tint of your brand brand tones */
+            background-color: #f0f4f2;
             color: #5d5e62;
-            border: 2px solid #b4cac0; /* Framed nicely by your brand color */
+            border: 2px solid #b4cac0;
         }
 
-        /* Subtle button press effect for mobile responsiveness */
         button:active {
             transform: scale(0.97);
         }
@@ -127,22 +151,17 @@
 </head>
 <body>
 
-<!-- Logo Placement -->
 <div class="logo-container">
-    <!-- If your logo is named logo.png and placed in the same folder on GitHub, this just works -->
     <img src="logo.png" alt="Brand Logo" class="brand-logo" onerror="this.style.display='none'">
 </div>
 
-<!-- Progress Bar -->
 <div class="progress-container">
     <div class="progress-bar" id="progress"></div>
 </div>
 
-<!-- Main Form Card -->
 <div class="form-container">
     <form id="multi-step-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         
-        <!-- Step 1 -->
         <div class="step active" id="step1">
             <p class="question">Question 1: Change this to your first question?</p>
             <div class="btn-container">
@@ -151,7 +170,6 @@
             </div>
         </div>
 
-        <!-- Step 2 -->
         <div class="step" id="step2">
             <p class="question">Question 2: Change this to your second question?</p>
             <div class="btn-container">
@@ -160,7 +178,6 @@
             </div>
         </div>
 
-        <!-- Step 3 -->
         <div class="step" id="step3">
             <p class="question">Question 3: Change this to your third question?</p>
             <div class="btn-container">
@@ -169,7 +186,6 @@
             </div>
         </div>
 
-        <!-- Step 4 -->
         <div class="step" id="step4">
             <p class="question">Question 4: Change this to your fourth question?</p>
             <div class="btn-container">
@@ -178,7 +194,6 @@
             </div>
         </div>
 
-        <!-- Step 5 -->
         <div class="step" id="step5">
             <p class="question">Question 5: Change this to your fifth question?</p>
             <div class="btn-container">
@@ -195,28 +210,32 @@
     const totalSteps = 5;
     let allAnswersAreYes = true;
 
+    // Initialize progress bar perfectly on page load (Step 1 = 20%)
+    function updateProgressBar() {
+        const progressPercentage = (currentStep / totalSteps) * 100;
+        document.getElementById('progress').style.width = `${progressPercentage}%`;
+    }
+    updateProgressBar();
+
     function nextStep(answer) {
         if (answer === 'no') {
             allAnswersAreYes = false;
         }
 
-        // Hide current step
+        // Deactivate old step (initiates fade-out animation)
         document.getElementById(`step${currentStep}`).classList.remove('active');
         currentStep++;
 
         const nextStepEl = document.getElementById(`step${currentStep}`);
         
         if (nextStepEl) {
-            // Update Progress Bar
-            const progressPercentage = (currentStep / totalSteps) * 100;
-            document.getElementById('progress').style.width = `${progressPercentage}%`;
+            // Update the progress bar fluidly
+            updateProgressBar();
 
-            // Show next question
-            setTimeout(() => {
-                nextStepEl.classList.add('active');
-            }, 50);
+            // Activate new step (initiates fade-in animation)
+            nextStepEl.classList.add('active');
         } else {
-            // End of form reached
+            // Form is completed -> Redirect logic
             if (allAnswersAreYes) {
                 window.location.href = "https://your-success-redirection-url.com";
             } else {
