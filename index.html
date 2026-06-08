@@ -16,40 +16,38 @@
 <form id="multi-step-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
     <!-- Step 1 -->
     <div class="step active" id="step1">
-        <p>Question 1: Do you like coffee?</p>
+        <p>Question 1: Change this to your first question?</p>
         <button type="button" onclick="nextStep('yes')">Yes</button>
         <button type="button" onclick="nextStep('no')">No</button>
     </div>
 
     <!-- Step 2 -->
     <div class="step" id="step2">
-        <p>Question 2: Do you drink it daily?</p>
+        <p>Question 2: Change this to your second question?</p>
         <button type="button" onclick="nextStep('yes')">Yes</button>
         <button type="button" onclick="nextStep('no')">No</button>
     </div>
 
     <!-- Step 3 -->
-    <div class="step" id="step2">
-        <p>Question 2: Do you drink it daily?</p>
+    <div class="step" id="step3">
+        <p>Question 3: Change this to your third question?</p>
         <button type="button" onclick="nextStep('yes')">Yes</button>
         <button type="button" onclick="nextStep('no')">No</button>
     </div>
 
-
     <!-- Step 4 -->
-    <div class="step" id="step2">
-        <p>Question 2: Do you drink it daily?</p>
+    <div class="step" id="step4">
+        <p>Question 4: Change this to your fourth question?</p>
         <button type="button" onclick="nextStep('yes')">Yes</button>
         <button type="button" onclick="nextStep('no')">No</button>
     </div>
 
     <!-- Step 5 -->
-    <div class="step" id="step2">
-        <p>Question 2: Do you drink it daily?</p>
+    <div class="step" id="step5">
+        <p>Question 5: Change this to your fifth question?</p>
         <button type="button" onclick="nextStep('yes')">Yes</button>
         <button type="button" onclick="nextStep('no')">No</button>
     </div>
-    
 </form>
 
 <script>
@@ -71,7 +69,7 @@
             // Show next question
             nextStepEl.classList.add('active');
         } else {
-            // No more steps? Handle the conditional redirection right here
+            // No more steps left (after Question 5). Handle the conditional redirection.
             if (allAnswersAreYes) {
                 window.location.href = "https://your-success-redirection-url.com";
             } else {
