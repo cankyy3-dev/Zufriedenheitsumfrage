@@ -41,20 +41,24 @@
         .progress-container {
             width: 100%;
             max-width: 400px;
-            background-color: #b4cac0;
-            height: 6px;
+            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white that pops off your charcoal background */
+            height: 8px; /* Slightly thicker (from 6px to 8px) for better visibility */
             border-radius: 10px;
             margin-bottom: 24px;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle outline */
         }
 
         .progress-bar {
             height: 100%;
-            width: 0%; /* Dynamic start managed cleanly by JS now */
-            background-color: #a0cfba;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Snappy, fluid animation */
+            width: 0%; 
+            background-color: #a0cfba; /* Your beautiful accent green stands out cleanly now */
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px rgba(160, 207, 186, 0.5); /* Subtle glow effect to emphasize the fill */
         }
 
+
+        
         /* Card Container */
         .form-container {
             background: #ffffff;
